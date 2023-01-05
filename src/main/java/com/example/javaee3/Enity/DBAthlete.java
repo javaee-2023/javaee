@@ -54,4 +54,10 @@ public class DBAthlete {
         this.sportsTeam = sportsTeam;
     }
 
+    public DBAthlete(int aid, String name, String group, String sportsTeam) {
+        this.aid = aid;
+        this.name = name;
+        this.group = group;
+        this.sportsTeam = sportsTeam;
+    }
 }

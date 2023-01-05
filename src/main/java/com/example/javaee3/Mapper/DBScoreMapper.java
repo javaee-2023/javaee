@@ -11,8 +11,10 @@ public interface DBScoreMapper {
     @Select("select * from score where sid=#{sid}")
     public DBScore findBySid(int sid);
 
-    @Insert("insert into score(sid, score, result, rank, team, number) values(#{sid}, #{score}, #{result}, #{rank}, #{team}, #{number})")
+    @Insert("insert into score(score, result, rank, team, number) values(#{score}, #{result}, #{rank}, #{team}, #{number})")
     public int insertScore(DBScore dbScore);
+    @Insert("insert into score(team, number) values(#{team}, #{number})")
+    public int insertScoreWithTeamAndNumber(DBScore dbScore);
 
     @Delete("delete from score where sid=#{sid}")
     public int deleteScore(int sid);

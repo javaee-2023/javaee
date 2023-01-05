@@ -10,6 +10,12 @@ public class DBAssociation {
     private int cid;
     private int sid;
 
+    public DBAssociation(int aid, int cid, int sid) {
+        this.aid = aid;
+        this.cid = cid;
+        this.sid = sid;
+    }
+
     @Override
     public String toString() {
         return "DBAssociation{" +

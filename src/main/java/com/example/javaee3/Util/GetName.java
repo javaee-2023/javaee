@@ -19,18 +19,18 @@ public class GetName {
         if(i==2){
             int j = random.nextInt(girl.length()-2);
             if (j % 2 == 0) {
-                name = "女-" + name + girl.substring(j, j + 2);
+                name =name + girl.substring(j, j + 2);
             } else {
-                name = "女-" + name + girl.substring(j, j + 1);
+                name =name + girl.substring(j, j + 1);
             }
 
         }
         else{
             int j = random.nextInt(girl.length()-2);
             if (j % 2 == 0) {
-                name = "男-" + name + boy.substring(j, j + 2);
+                name =name + boy.substring(j, j + 2);
             } else {
-                name = "男-" + name + boy.substring(j, j + 1);
+                name =name + boy.substring(j, j + 1);
             }
 
         }

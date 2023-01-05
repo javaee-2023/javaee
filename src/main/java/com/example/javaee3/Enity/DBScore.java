@@ -32,6 +32,11 @@ public class DBScore {
         return sid;
     }
 
+    public DBScore(String team, String number) {
+        this.team = team;
+        this.number = number;
+    }
+
     public void setSid(int sid) {
         this.sid = sid;
     }

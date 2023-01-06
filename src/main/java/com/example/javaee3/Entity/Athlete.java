@@ -1,7 +1,7 @@
-package com.example.javaee3.Enity;
+package com.example.javaee3.Entity;
 
 public class Athlete {
-    private String id;
+    private int id;
     private String name;
     private String group;
     private String sport;
@@ -22,7 +22,7 @@ public class Athlete {
                 '}';
     }
 
-    public Athlete(String id, String name, String group, String sport, String team, String number, String sportsTeam) {
+    public Athlete(int id, String name, String group, String sport, String team, String number, String sportsTeam) {
         this.id = id;
         this.name = name;
         this.group = group;
@@ -33,12 +33,11 @@ public class Athlete {
     }
 
 
-
-    public String getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 

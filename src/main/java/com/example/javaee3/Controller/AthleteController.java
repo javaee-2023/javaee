@@ -1,8 +1,12 @@
 package com.example.javaee3.Controller;
 
-import com.example.javaee3.Enity.Athlete;
+import com.example.javaee3.Entity.Athlete;
+import com.example.javaee3.Mapper.AthleteMapper;
+import com.example.javaee3.Service.AthleteService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -12,123 +16,86 @@ import java.util.Map;
 @RequestMapping("athlete")
 @CrossOrigin
 public class AthleteController {
-    List<Athlete> athletesList=new ArrayList<>();
     boolean flag=false;
-    private int cnt=5;
-    @GetMapping("init")
-    public void initAthlete(){
-        if(flag==true) return;
-        athletesList.add(new Athlete("1","1","201","立定跳远","第一组","1","是"));
-        athletesList.add(new Athlete("2","2","201","立定跳远","第一组","2","否"));
-        athletesList.add(new Athlete("3","3","201","铅球","第一组","3","是"));
-        athletesList.add(new Athlete("4","4","301","立定跳远","第二组","5","否"));
-        athletesList.add(new Athlete("5","5","301","铅球","第二组","5","是"));
-        flag=true;
-    }
-
+    boolean fg=false;
+    @Autowired
+    AthleteService athleteService;
+    @Autowired
+    AthleteMapper athleteMapper;
     //添加运动员
     @PostMapping("insert")
-    public void insertAthlete(@RequestBody Athlete athlete){
+    public Map insertAthlete(@RequestBody Athlete athlete){
         System.out.println("insertAthlete"+athlete.toString());
-        ++cnt;
-        athlete.setId(""+cnt);
-        athletesList.add(athlete);
+        Map map=new HashMap();
+        String message=athleteService.insertAthlete(athlete);
+        map.put("message", message);
+        return map;
     }
 
     //搜索
     @PostMapping("get")
-    public List<Athlete> getAthletes(@RequestBody Athlete athlete){
+    public Map getAthletes(@RequestBody Athlete athlete){
+        System.out.println(athlete.toString());
+        Map map=new HashMap<>();
+        List<Athlete> athleteList=athleteService.findAthletes(athlete);
+        map.put("athleteList",athleteList);
+        map.put("message", "搜索成功");
+        map.put("code", 1);
+        return map;
+    }
 
-        List<Athlete> list=new ArrayList<>();
-        for(int i=0;i<= athletesList.size()-1;++i){
-            //筛选id
-            if(!athlete.getId().equals("")){
-                if(!athletesList.get(i).getId().equals(athlete.getId())){
-                    continue;
-                }
-            }
-            //筛选姓名
-            if(!athlete.getName().equals("")){
-                if(!athletesList.get(i).getName().equals(athlete.getName())){
-                    continue;
-                }
-            }
-            //筛选团体
-            if(!athlete.getGroup().equals("")){
-                if(!athletesList.get(i).getGroup().equals(athlete.getGroup())){
-                    continue;
-                }
-            }
-            //筛选项目
-            if(!athlete.getSport().equals("")){
-                if(!athletesList.get(i).getSport().equals(athlete.getSport())){
-                    continue;
-                }
-            }
-            //筛选小组
-            if(!athlete.getTeam().equals("")){
-                if(!athletesList.get(i).getTeam().equals(athlete.getTeam())){
-                    continue;
-                }
-            }
-            //筛选序号
-            if(!athlete.getNumber().equals("")){
-                if(!athletesList.get(i).getNumber().equals(athlete.getNumber())){
-                    continue;
-                }
-            }
-            //筛选是否运动队员
-            if(!athlete.getSportsTeam().equals("")){
-                if(!athletesList.get(i).getSportsTeam().equals(athlete.getSportsTeam())){
-                    continue;
-                }
-            }
-            //如果满足条件
-            list.add(athletesList.get(i));
-        }
-        return list;
+    //搜索2，不弹出信息
+    @PostMapping("search")
+    public Map searchAthletes(@RequestBody Athlete athlete){
+        Map map=new HashMap<>();
+        System.out.println(athlete.toString());
+        List<Athlete> athleteList=athleteService.findAthletes(athlete);
+        map.put("athleteList",athleteList);
+        return map;
     }
 
     //删除
     @GetMapping("delete")
-    public void deleteAthlete(String id){
+    public Map deleteAthlete(int id){
+        Map map=new HashMap<>();
         System.out.println(id);
-       for(int i=0;i<=athletesList.size()-1;++i){
-           if(athletesList.get(i).getId().equals(id)){
-               //System.out.println("1");
-               athletesList.remove(i);
-               return;
-           }
-       }
+        String message=athleteService.deleteAthletes(id);
+        map.put("message", message);
+        return map;
     }
 
     //编辑
     @PostMapping("edit")
-    public void editAthlete(@RequestBody Athlete athlete){
-        System.out.println(athlete.toString());
-        for(int i=0;i<=athletesList.size()-1;++i){
-            if(athletesList.get(i).getId().equals(athlete.getId())){
-                athletesList.set(i, athlete);
-                return;
-            }
-        }
+    public Map editAthlete(@RequestBody List<Athlete> athletes){
+        System.out.println(athletes.toString());
+        Map map=new HashMap();
+        String message=athleteService.editAthlete(athletes.get(0), athletes.get(1));
+        map.put("message", message);
+        return map;
     }
 
     //TODO：比赛开始
     @GetMapping("start")
     public Map startCompetition(){
-
+        System.out.println("比赛开始");
         Map map=new HashMap();
-        if(true)//TODO:待修改
+        if(fg)
         {
             map.put("message", "比赛已开始");
         }
         else
         {
-            map.put("message", "项目"+"小组人数不够");
-        return map;
+            map.put("message", athleteService.check());
         }
-        map.put("message", "比赛开始失败");
+        return map;
+    }
+    //比赛初始化
+    @GetMapping("init")
+    public Map initCompetition(){
+        System.out.println("比赛初始化");
+        Map map=new HashMap();
+        athleteService.initCompetition();
+        map.put("Message", "初始化成功");
         return map;
     }
 }

@@ -1,6 +1,6 @@
-package com.example.javaee3.Enity;
+package com.example.javaee3.Entity;
 
-public class DBAthlete {
+public class DBAthlete implements Comparable<DBAthlete>{
     /**
      * aid 运动员号码（即id）
      * name 运动员名字
@@ -54,10 +54,12 @@ public class DBAthlete {
         this.sportsTeam = sportsTeam;
     }
 
-    public DBAthlete(int aid, String name, String group, String sportsTeam) {
-        this.aid = aid;
+    public DBAthlete(String name, String group, String sportsTeam) {
         this.name = name;
         this.group = group;
         this.sportsTeam = sportsTeam;
+    }
+    public int compareTo(DBAthlete o) {
+        return  o.getAid()-this.getAid() ;
     }
 }

@@ -1,10 +1,7 @@
 package com.example.javaee3.Mapper;
 
-import com.example.javaee3.Enity.DBAssociation;
-import org.apache.ibatis.annotations.Delete;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Select;
+import com.example.javaee3.Entity.DBAssociation;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
@@ -30,7 +27,12 @@ public interface DBAssociationMapper {
     @Insert("insert into association(aid, cid, sid) values(#{aid}, #{cid}, #{sid})")
     public int insertAssociation(DBAssociation dbAssociation);
 
+    @Update("update association set cid=#{c_cid} where aid=#{aid} and cid=#{cid} and sid=#{sid}")
+    public int updateAssociationWithCid(int aid, int cid, int sid, int c_cid);
+
     @Delete("delete from association where aid=#{aid} and cid=#{cid} and sid=#{sid}")
     public int deleteAssociation(DBAssociation dbAssociation);
+    @Delete("delete from association where aid=#{aid}")
+    public int deleteAssociationByAid(int aid);
 
 }

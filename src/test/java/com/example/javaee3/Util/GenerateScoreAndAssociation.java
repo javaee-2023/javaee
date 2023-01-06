@@ -1,8 +1,8 @@
 package com.example.javaee3.Util;
 
-import com.example.javaee3.Enity.DBAssociation;
-import com.example.javaee3.Enity.DBAthlete;
-import com.example.javaee3.Enity.DBScore;
+import com.example.javaee3.Entity.DBAssociation;
+import com.example.javaee3.Entity.DBAthlete;
+import com.example.javaee3.Entity.DBScore;
 import com.example.javaee3.Mapper.DBAssociationMapper;
 import com.example.javaee3.Mapper.DBAthleteMapper;
 import com.example.javaee3.Mapper.DBCompetitionMapper;

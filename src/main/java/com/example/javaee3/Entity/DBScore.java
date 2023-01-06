@@ -1,6 +1,6 @@
-package com.example.javaee3.Enity;
+package com.example.javaee3.Entity;
 
-public class DBScore {
+public class DBScore implements Comparable<DBScore>{
     /**
      * sid 比赛id
      * score 比赛得分
@@ -79,5 +79,8 @@ public class DBScore {
 
     public void setNumber(String number) {
         this.number = number;
+    }
+    public int compareTo(DBScore o) {
+        return  o.getSid()-this.getSid() ;
     }
 }

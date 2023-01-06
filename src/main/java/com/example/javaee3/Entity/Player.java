@@ -1,4 +1,4 @@
-package com.example.javaee3.Enity;
+package com.example.javaee3.Entity;
 
 public class Player{
 

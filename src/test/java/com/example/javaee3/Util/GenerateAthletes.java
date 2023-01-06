@@ -1,6 +1,6 @@
 package com.example.javaee3.Util;
 
-import com.example.javaee3.Enity.DBAthlete;
+import com.example.javaee3.Entity.DBAthlete;
 import com.example.javaee3.Mapper.DBAssociationMapper;
 import com.example.javaee3.Mapper.DBAthleteMapper;
 import com.example.javaee3.Mapper.DBCompetitionMapper;
@@ -42,7 +42,7 @@ public class GenerateAthletes {
                 //十分之一的概率是运动队队员
                 if(getRandomInt(1,10)==1) sportsTeam="是";
                 else sportsTeam="否";
-                DBAthlete dbAthlete=new DBAthlete(0, GetName.getName(), group.get(i), sportsTeam);
+                DBAthlete dbAthlete=new DBAthlete(GetName.getName(), group.get(i), sportsTeam);
                 System.out.println(dbAthlete.toString());
                 dbAthleteMapper.insertAthlete(dbAthlete);
             }

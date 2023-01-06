@@ -1,13 +1,11 @@
 package com.example.javaee3.Mapper;
 
-import com.example.javaee3.Enity.DBCompetition;
+import com.example.javaee3.Entity.DBCompetition;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 class DBCompetitionMapperTest {

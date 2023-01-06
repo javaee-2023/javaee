@@ -1,6 +1,6 @@
 package com.example.javaee3.Entity;
 
-public class Group {
+public class Group implements Comparable<Group>{
 
     private int rank;
     private String group;
@@ -34,5 +34,10 @@ public class Group {
 
     public void setScore(double score) {
         this.score = score;
+    }
+
+    @Override
+    public int compareTo(Group o) {
+        return (int)((o.getScore()-this.score)*100000000);
     }
 }

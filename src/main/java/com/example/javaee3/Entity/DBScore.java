@@ -37,6 +37,13 @@ public class DBScore implements Comparable<DBScore>{
         this.number = number;
     }
 
+    public DBScore(int sid, double score, double result, int rank) {
+        this.sid = sid;
+        this.score = score;
+        this.result = result;
+        this.rank = rank;
+    }
+
     public void setSid(int sid) {
         this.sid = sid;
     }

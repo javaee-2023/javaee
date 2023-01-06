@@ -27,7 +27,7 @@ public class AthleteService {
         boolean flag=false;
 
         //看项目人数是否已满
-        if(dbScoreMapper.searchFreeNumberAndTeam(athlete.getSport()).size()==72) return "项目人已满，无法报名";
+        if(dbScoreMapper.searchFreeNumberAndTeam(athlete.getSport()).size()==72) return "人数已满，无法报名";
 
         DBAthlete check=dbAthleteMapper.findByName(athlete.getName());
 
@@ -71,9 +71,11 @@ public class AthleteService {
         }
         else if(athlete.getNumber()==""&&athlete.getTeam()==""){
             List<DBScore> dbScores=dbScoreMapper.searchFreeNumberAndTeam(athlete.getSport());
+            //System.out.println(dbScores.size());
             for(int i=0;i<dbScores.size();++i){
                 DBScore dbScore=dbScores.get(i);
-                map.put(dbScore.getNumber()+dbScore.getScore(), 1);
+                //System.out.println(dbScore.toString());
+                map.put(dbScore.getNumber()+dbScore.getTeam(), 1);
             }
             boolean fg=false;
             for(int i=1;i<=8;++i){
@@ -111,12 +113,13 @@ public class AthleteService {
     }
 
     public String deleteAthletes(int id) {
-        dbAthleteMapper.deleteAthlete(id);
         List<DBAssociation> associations=dbAssociationMapper.findByAid(id);
         dbAssociationMapper.deleteAssociationByAid(id);
+        dbAthleteMapper.deleteAthlete(id);
         for(int i=0;i<associations.size();++i){
             dbScoreMapper.deleteScore(associations.get(i).getSid());
         }
+
         return "删除成功";
     }
     public String editAthlete(Athlete pre, Athlete nex){
@@ -130,6 +133,16 @@ public class AthleteService {
         if(nex.getNumber()!="")     pre.setNumber(nex.getNumber());
         if(nex.getSportsTeam()!="") pre.setSportsTeam(nex.getSportsTeam());
         int cid=dbCompetitionMapper.findByRoundAndSport("初赛", nex.getSport()).getCid();
+
+        //检查序号是否已满
+        List<DBAssociation> dbAssociations=dbAssociationMapper.findByCid(cid);
+        for(int i=0;i<dbAssociations.size();++i){
+            DBScore dbScores=dbScoreMapper.findBySid(dbAssociations.get(i).getSid());
+            if(dbScores.getTeam().equals(pre.getTeam())&&dbScores.getNumber().equals(pre.getNumber())){
+                return "编辑失败，该项目该小组该序号已被占用";
+            }
+        }
+
         dbScoreMapper.updateScoreWithTeamAndNumber(dbAssociation.getSid(), pre.getTeam(), pre.getNumber());
         dbAthleteMapper.updateAthlete(dbAssociation.getAid(),pre.getName(), pre.getGroup(),pre.getSportsTeam());
         dbAssociationMapper.updateAssociationWithCid(dbAssociation.getAid(), dbAssociation.getCid(), dbAssociation.getSid(), cid);
@@ -140,8 +153,8 @@ public class AthleteService {
         if(dbScoreMapper.searchFreeNumberAndTeam("200m赛跑").size()<72) return "200m赛跑比赛人数不够";
         if(dbScoreMapper.searchFreeNumberAndTeam("1000m赛跑").size()<72) return "1000m赛跑比赛人数不够";
         if(dbScoreMapper.searchFreeNumberAndTeam("3000m赛跑").size()<72) return "3000m赛跑比赛人数不够";
-        if(dbScoreMapper.searchFreeNumberAndTeam("立定跳远m赛跑").size()<72) return "立定跳远比赛人数不够";
-        if(dbScoreMapper.searchFreeNumberAndTeam("铅球赛跑").size()<72) return "铅球比赛人数不够";
+        if(dbScoreMapper.searchFreeNumberAndTeam("立定跳远").size()<72) return "立定跳远比赛人数不够";
+        if(dbScoreMapper.searchFreeNumberAndTeam("铅球").size()<72) return "铅球比赛人数不够";
         if(dbScoreMapper.searchFreeNumberAndTeam("跳高").size()<72) return "跳高比赛人数不够";
         return "比赛开始";
     }

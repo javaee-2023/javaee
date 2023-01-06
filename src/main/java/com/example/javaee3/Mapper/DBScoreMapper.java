@@ -13,7 +13,7 @@ public interface DBScoreMapper {
     public List<DBScore> findByTeam(String team);
     @Select("Select * from score where `number`=#{number}")
     public List<DBScore> findByNumber(String number);
-    @Select("Select * from score where team=#{team},`number`=#{number}")
+    @Select("Select * from score where team=#{team} and `number`=#{number}")
     public List<DBScore> findByTeamAndNumber(String team, String number);
 
     /**
@@ -33,9 +33,16 @@ public interface DBScoreMapper {
 
     @Update("update score set team=#{team}, `number`=#{number} where sid=#{sid}")
     public int updateScoreWithTeamAndNumber(int sid, String team, String number);
+    @Update("update score set `rank`=#{number} where sid=#{sid}")
+    public int updateScoreWithRank(int sid, int rank);
+    @Update("update score set team=#{team}, `number`=#{number} where sid=#{sid}")
+    public int updateScoreWithGrade(int sid, int rank, double result, double score);
     @Update("update score set `rank`=null, `result`=null, score=null where sid=#{sid}")
     public int initScore(int sid);
+//    @Update("update score set")
+//    public  int updateScoreWithScore
     @Delete("delete from score where sid=#{sid}")
     public int deleteScore(int sid);
+
 
 }

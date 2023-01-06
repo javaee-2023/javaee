@@ -1,31 +1,38 @@
 package com.example.javaee3.Entity;
 
-public class Player{
+public class Player implements Comparable<Player>{
 
     private int rank;
-    private String id;
+    private int id;
     private String name;
     private String group;
     private String number;
     private double result;//成绩
     private double score;//得分
-    private String sport;
+    private int sid;
+
+    public int getSid() {
+        return sid;
+    }
+
+    public void setSid(int sid) {
+        this.sid = sid;
+    }
 
     @Override
     public String toString() {
         return "Player{" +
                 "rank=" + rank +
-                ", id='" + id + '\'' +
+                ", id=" + id +
                 ", name='" + name + '\'' +
                 ", group='" + group + '\'' +
                 ", number='" + number + '\'' +
                 ", result=" + result +
                 ", score=" + score +
-                ", sport='" + sport + '\'' +
                 '}';
     }
 
-    public Player(int rank, String id, String name, String group, String number, double result, double score, String sport) {
+    public Player(int rank, int id, String name, String group, String number, double result, double score) {
         this.rank = rank;
         this.id = id;
         this.name = name;
@@ -33,17 +40,13 @@ public class Player{
         this.number = number;
         this.result = result;
         this.score = score;
-        this.sport = sport;
     }
 
-
-
-    public String getSport() {
-        return sport;
-    }
-
-    public void setSport(String sport) {
-        this.sport = sport;
+    public Player(int rank, int id, double result, double score) {
+        this.rank=rank;
+        this.id = id;
+        this.result = result;
+        this.score = score;
     }
 
     public int getRank() {
@@ -54,11 +57,11 @@ public class Player{
         this.rank = rank;
     }
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -100,5 +103,13 @@ public class Player{
 
     public void setScore(double score) {
         this.score = score;
+    }
+
+    @Override
+    public int compareTo(Player o) {
+        if(o.getResult()==this.result) return this.id-o.getId();
+        else {
+            return (int)((o.getScore() - this.score)*10000);
+        }
     }
 }

@@ -166,16 +166,16 @@ public class AthleteService {
             int cid=comp1.get(i).getCid();
             List<DBAssociation> dbAssociations=dbAssociationMapper.findByCid(cid);
             for(int j=0;j<dbAssociations.size();++j){
+                dbAssociationMapper.deleteAssociation(dbAssociations.get(j));
                 dbScoreMapper.deleteScore(dbAssociations.get(j).getSid());
-                dbAssociationMapper.deleteAssociation(dbAssociations.get(i));
             }
         }
         for(int i=0;i<comp2.size();++i){
             int cid=comp2.get(i).getCid();
             List<DBAssociation> dbAssociations=dbAssociationMapper.findByCid(cid);
             for(int j=0;j<dbAssociations.size();++j){
+                dbAssociationMapper.deleteAssociation(dbAssociations.get(j));
                 dbScoreMapper.deleteScore(dbAssociations.get(j).getSid());
-                dbAssociationMapper.deleteAssociation(dbAssociations.get(i));
             }
         }
         for(int i=0;i<comp3.size();++i){

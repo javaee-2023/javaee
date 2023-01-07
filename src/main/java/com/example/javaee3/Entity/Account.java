@@ -1,5 +1,8 @@
 package com.example.javaee3.Entity;
 
+/**
+ *处理登录账号的实体类
+ */
 
 public class Account {
     private String username;

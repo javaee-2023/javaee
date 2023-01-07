@@ -5,8 +5,12 @@ import com.example.javaee3.Mapper.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class CompetitionService {
@@ -22,17 +26,27 @@ public class CompetitionService {
     DBScoreMapper dbScoreMapper;
     public List<Player> searchPlayer(Competition competition) {
         List<Player> list=competitionMapper.findPlayerByCompetition(competition);
-        Collections.sort(list);
+        list.sort(Comparator.comparing(Player::getScore).thenComparing(Player::getId).reversed());
+        for(int i=0;i<list.size();++i){
+            list.set(i, new Player(i+1, list.get(i) ) );
+            dbScoreMapper.updateScoreWithRank(list.get(i).getSid(), i+1);
+        }
         return list;
     }
     public String semiFinals(String sport, String team){
         List<Player> list=competitionMapper.findPlayerByCompetition(new Competition("半决赛", sport, team));
-        Collections.sort(list);
+        for(int i=0;i<list.size();++i){
+            int cid=dbCompetitionMapper.findByRoundAndSport("决赛", sport).getCid();
+            if(dbAssociationMapper.findByAidAndCid(list.get(i).getId(), cid).size()!=0){
+                return "操作失败，该组已晋级";
+            }
+        }
+        list.sort(Comparator.comparing(Player::getScore).reversed());
         for(int i=1;i<=2;++i){
-            List<Player> plays=competitionMapper.findPlayerByCompetition(new Competition("决赛", sport, Integer.toString(i)));
-            dbScoreMapper.insertScoreWithTeamAndNumber(new DBScore(Integer.toString(i), Integer.toString(plays.size()+1)));
-            List<DBScore> dbScores=dbScoreMapper.findByTeamAndNumber(Integer.toString(i), Integer.toString(plays.size()+1));
-            Collections.sort(dbScores);
+            List<Player> plays=competitionMapper.findPlayerByCompetition(new Competition("决赛", sport, Integer.toString(1)));
+            dbScoreMapper.insertScoreWithTeamAndNumber(new DBScore(Integer.toString(1), Integer.toString(plays.size()+1)));
+            List<DBScore> dbScores=dbScoreMapper.findByTeamAndNumber(Integer.toString(1), Integer.toString(plays.size()+1));
+            dbScores.sort(Comparator.comparing(DBScore::getSid).reversed());
             int sid=dbScores.get(0).getSid();
             int aid=list.get(i-1).getId();
             int cid=dbCompetitionMapper.findByRoundAndSport("决赛", sport).getCid();
@@ -42,12 +56,18 @@ public class CompetitionService {
     }
     public String preliminaryRound(String sport, String team){
         List<Player> list=competitionMapper.findPlayerByCompetition(new Competition("初赛", sport, team));
-        Collections.sort(list);
+        for(int i=0;i<list.size();++i){
+            int cid=dbCompetitionMapper.findByRoundAndSport("半决赛", sport).getCid();
+            if(dbAssociationMapper.findByAidAndCid(list.get(i).getId(), cid).size()!=0){
+                return "操作失败，该组已晋级";
+            }
+        }
+        list.sort(Comparator.comparing(Player::getScore).reversed());
         for(int i=1;i<=4;++i){
             List<Player> plays=competitionMapper.findPlayerByCompetition(new Competition("半决赛", sport, Integer.toString(i)));
             dbScoreMapper.insertScoreWithTeamAndNumber(new DBScore(Integer.toString(i), Integer.toString(plays.size()+1)));
             List<DBScore> dbScores=dbScoreMapper.findByTeamAndNumber(Integer.toString(i), Integer.toString(plays.size()+1));
-            Collections.sort(dbScores);
+            dbScores.sort(Comparator.comparing(DBScore::getSid).reversed());
             int sid=dbScores.get(0).getSid();
             int aid=list.get(i-1).getId();
             int cid=dbCompetitionMapper.findByRoundAndSport("半决赛", sport).getCid();
@@ -56,12 +76,19 @@ public class CompetitionService {
         return "初赛晋级成功";
     }
 
+    public double fixed(double x){
+        double d = x;
+        BigDecimal bd=new BigDecimal(d);
+        double d1=bd.setScale(2, RoundingMode.HALF_UP).doubleValue();
+        return d1;
+    }
     public double getRandom(double a, double b){
-        return (Math.random() * (b-a) )+a;
+
+        return fixed((Math.random() * (b-a) )+a);
     }
     public double getScore(double result, double a, double b, boolean fg){
         if(fg) result=b-(result-a);
-        return result*(100/(b-a))+50;
+        return fixed((result-a)*(100/(b-a)));
     }
 
     /**
@@ -75,90 +102,96 @@ public class CompetitionService {
      */
     public void simulateCompetition(String round, String sport, String team){
         List<Player> players=competitionMapper.findPlayerByCompetition(new Competition(round, sport, team));
+//        System.out.println("模拟A");
         for(int i=0;i<players.size();++i) {
             double result=0;
             double score=0;
-            if (sport == "100m赛跑") {
+            if (Objects.equals(sport, "100m赛跑")) {
+//                System.out.println("模拟B");
                 result = getRandom(11, 15);
                 score = getScore(result, 11, 15, true);
             }
-            if (sport == "200m赛跑") {
+            if (Objects.equals(sport, "200m赛跑")) {
                 result = getRandom(24, 30);
                 score = getScore(result, 24, 30, true);
             }
-            if (sport == "1000m赛跑") {
+            if (Objects.equals(sport, "1000m赛跑")) {
                 result = getRandom(215, 270);
                 score = getScore(result, 215, 270, true);
             }
-            if (sport == "3000m赛跑") {
+            if (Objects.equals(sport, "3000m赛跑")) {
                 result = getRandom(610, 700);
                 score = getScore(result, 610, 700, true);
             }
-            if (sport == "立定跳远") {
+            if (Objects.equals(sport, "立定跳远")) {
                 result = getRandom(183, 273);
                 score = getScore(result, 183, 273, false);
             }
-            if (sport == "铅球") {
+            if (Objects.equals(sport, "铅球")) {
                  result = getRandom(8.5, 12);
                 score = getScore(result, 8.5, 12, false);
             }
-            if (sport == "跳高") {
+            if (Objects.equals(sport, "跳高")) {
                  result = getRandom(50, 150);
                 score = getScore(result, 50, 150, false);
             }
             int cid=dbCompetitionMapper.findByRoundAndSport(round, sport).getCid();
             int aid=players.get(i).getId();
             int sid=dbAssociationMapper.findByAidAndCid(aid, cid).get(0).getSid();
-            players.set(i, new Player(sid, aid, result, score));
-        }
-        Collections.sort(players);
-        for(int i=0;i<players.size();++i){
-            Player player=players.get(i);
-            dbScoreMapper.updateScoreWithGrade(player.getRank(), i+1, player.getResult(), player.getScore());
+            dbScoreMapper.updateScoreWithGrade(sid, result, score);
         }
     }
 
-    public void editCompetition(int aid, String round, String sport, double result){
+    public String editCompetition(int aid, String round, String sport, double result){
         int cid=dbCompetitionMapper.findByRoundAndSport(round, sport).getCid();
         int sid=dbAssociationMapper.findByAidAndCid(aid, cid).get(0).getSid();
-
+        //System.out.println("*"+sport);
         double score=0;
-        if (sport == "100m赛跑") {
-            score = getScore(result, 11, 15, true);
+        if (Objects.equals(sport, "100m赛跑")) {
+            if(result>15) score=0;
+            else if(result<11) score=100;
+            else score = getScore(result, 11, 15, true);
+            //System.out.println("*"+score);
         }
-        if (sport == "200m赛跑") {
-            score = getScore(result, 24, 30, true);
+        if (Objects.equals(sport, "200m赛跑")) {
+            if(result>30) score=0;
+            else if(result<24) score=100;
+            else score = getScore(result, 24, 30, true);
         }
-        if (sport == "1000m赛跑") {
-            score = getScore(result, 215, 270, true);
+        if (Objects.equals(sport, "1000m赛跑")) {
+            if(result>270) score=0;
+            else if(result<215) score=100;
+            else score = getScore(result, 215, 270, true);
         }
-        if (sport == "3000m赛跑") {
-            score = getScore(result, 610, 700, true);
+        if (Objects.equals(sport, "3000m赛跑")) {
+            if(result>700) score=0;
+            else if(result<610) score=100;
+            else score = getScore(result, 610, 700, true);
         }
-        if (sport == "立定跳远") {
-            score = getScore(result, 183, 273, false);
+        if (Objects.equals(sport, "立定跳远")) {
+            if(result>273) score=0;
+            else if(result<183) score=100;
+            else score = getScore(result, 183, 273, false);
         }
-        if (sport == "铅球") {
-            score = getScore(result, 8.5, 12, false);
+        if (Objects.equals(sport, "铅球")) {
+            if(result>12) score=100;
+            else if(result<8.5) score=0;
+            else score = getScore(result, 8.5, 12, false);
         }
-        if (sport == "跳高") {
-            score = getScore(result, 50, 150, false);
+        if (Objects.equals(sport, "跳高")) {
+            if(result>150) score=100;
+            else if(result<50) score=0;
+            else score = getScore(result, 50, 150, false);
         }
+
         DBScore dbScore=dbScoreMapper.findBySid(sid);
         List<Player> list=competitionMapper.findPlayerByCompetition(new Competition(round, sport, dbScore.getTeam()));
-        Collections.sort(list);
-        for(int i=0;i<list.size();++i){
-            if(list.get(i).getSid()==sid){
-                dbScoreMapper.updateScoreWithGrade(sid, i+1, result, score);
-            }
-            else{
-                dbScoreMapper.updateScoreWithRank(list.get(i).getSid(), i+1);
-            }
-        }
+        dbScoreMapper.updateScoreWithGrade(sid, result, score);
+        return "编辑成功";
     }
     public List<Group> groupRankCompetition(){
         List<Group> list=competitionMapper.findGroup();
-        Collections.sort(list);
+        list.sort(Comparator.comparing(Group::getScore).reversed());
         for(int i=0;i<list.size();++i){
             list.set(i, new Group(i+1 ,list.get(i).getGroup(), list.get(i).getScore()));
         }

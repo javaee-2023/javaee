@@ -1,5 +1,9 @@
 package com.example.javaee3.Entity;
 
+/**
+ *比赛实体
+ */
+
 public class Competition {
     String round;
     String sport;

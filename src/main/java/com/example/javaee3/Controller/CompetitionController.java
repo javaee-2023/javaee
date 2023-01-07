@@ -7,10 +7,7 @@ import com.example.javaee3.Service.CompetitionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 @RestController
 @CrossOrigin
@@ -21,7 +18,7 @@ public class CompetitionController {
     //查找比赛总表
     @PostMapping("search")
     public Map searchPlayer(@RequestBody Competition competition){
-        System.out.println("寻找比赛中运动员");
+        System.out.println("寻找比赛中运动员"+competition.toString());
         Map map=new HashMap<>();
         map.put("athleteList", competitionService.searchPlayer(competition));
         map.put("message", "查询成功");
@@ -29,24 +26,38 @@ public class CompetitionController {
         return map;
     }
 
+    //无消息
+    @PostMapping("find")
+    public Map findPlayer(@RequestBody Competition competition){
+        System.out.println("寻找比赛中运动员"+competition.toString());
+        Map map=new HashMap<>();
+        map.put("athleteList", competitionService.searchPlayer(competition));
+        map.put("message", "查询成功");
+        return map;
+    }
+
     //比赛赛晋级
     @GetMapping("promote")
     public Map promoteCompetition(String round, String sport, String team){
+        System.out.println("晋级");
+        System.out.println(round+" "+sport+" "+team);
         Map map=new HashMap();
-        if(round=="决赛"){
+        if(Objects.equals(round, "决赛")){
             map.put("message", "决赛不能晋级");
             map.put("code", 0);
             return map;
         }
-        if(round=="半决赛"){
+        if(Objects.equals(round, "半决赛")){
             String message=competitionService.semiFinals(sport, team);
             map.put("message", message);
-            map.put("code", 1);
+            if(message.equals("半决赛晋级成功")) map.put("code", 1);
+            else map.put("code", 0);
         }
-        if(round=="初赛"){
+        if(Objects.equals(round, "初赛")){
             String message=competitionService.preliminaryRound(sport, team);
             map.put("message", message);
-            map.put("code", 1);
+            if(message.equals("初赛晋级成功")) map.put("code", 1);
+            else map.put("code", 0);
         }
         return map;
     }
@@ -67,10 +78,12 @@ public class CompetitionController {
     @GetMapping("edit")
     public Map editCompetition(int id, String round, String sport, double result){
         System.out.println("修改比赛");
-        competitionService.editCompetition(id, round, sport, result);
+        System.out.println(id+" "+round+" "+sport+" "+result);
+        String message=competitionService.editCompetition(id, round, sport, result);
         Map map=new HashMap();
-        map.put("message", "修改比赛成功");
-        map.put("code", 1);
+        map.put("message", message);
+        if(message=="编辑成功") map.put("code", 1);
+        else map.put("code", 0);
         return map;
     }
 
@@ -78,9 +91,9 @@ public class CompetitionController {
     //查找团队排名
     @GetMapping("groupRank")
     public Map groupRankCompetition(){
+        System.out.println("团队排名");
         Map map=new HashMap();
-        List<Group> list = new ArrayList<>();
-        map.put("message", competitionService.groupRankCompetition());
+        map.put("groupList", competitionService.groupRankCompetition());
         map.put("message", "查找成功");
         map.put("code", 1);
         return map;
@@ -89,6 +102,7 @@ public class CompetitionController {
     //查找运动队队员信息
     @GetMapping("sportsTeam")
     public Map sportsTeamCompetition(){
+        System.out.println("运动队统计");
         Map map=new HashMap();
         List<Player> list = new ArrayList<>();
         map.put("sportsTeamList", competitionService.sportsTeamCompetition());
@@ -96,6 +110,8 @@ public class CompetitionController {
         map.put("code", 1);
         return map;
     }
+    //获取map
+
 
 }
 

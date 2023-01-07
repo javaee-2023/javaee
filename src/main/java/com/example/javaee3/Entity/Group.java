@@ -12,6 +12,9 @@ public class Group implements Comparable<Group>{
         this.score = score;
     }
 
+    public Group() {
+    }
+
     public int getRank() {
         return rank;
     }

@@ -12,7 +12,6 @@ import java.util.List;
 @Mapper
 public interface CompetitionMapper {
     public List<Player> findPlayerByCompetition(Competition competition);
-    @Select("select `group`, sum(c.score) as score from athlete as a, association as b, score as c where a.aid=b.aid and b.sid=c.sid group by `group`")
     public List<Group> findGroup();
     public List<SportsTeamPlayer> findSportsTeam();
 }

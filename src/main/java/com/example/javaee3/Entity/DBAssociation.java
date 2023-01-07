@@ -1,5 +1,9 @@
 package com.example.javaee3.Entity;
 
+/**
+ *直接和数据库交互的实体
+ */
+
 public class DBAssociation {
     /**
      * aid 运动员号码（即id）

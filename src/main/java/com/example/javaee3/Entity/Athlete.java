@@ -1,4 +1,7 @@
 package com.example.javaee3.Entity;
+/**
+ *处理注册界面的运动员
+ */
 
 public class Athlete {
     private int id;

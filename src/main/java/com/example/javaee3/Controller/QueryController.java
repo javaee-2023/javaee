@@ -2,60 +2,44 @@ package com.example.javaee3.Controller;
 
 
 import com.example.javaee3.Entity.Player;
+import com.example.javaee3.Entity.Student;
+import com.example.javaee3.Service.QueryService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @CrossOrigin
 @RequestMapping("query")
 public class QueryController {
-
-    Player player = new Player();//
+    @Autowired
+    QueryService queryService;
     //破纪录列表查询
     @GetMapping("record")
-    public List<Player> recordQuery(String sport){
-
-        List<Player> list = new ArrayList<>();
-//        for() {
-//            if (player.getSport().equals(sport))
-//
-//                if (player.getResult() > ) {
-//                    list.add(player);
-//                }
-//        }
-        return list;
+    public Map recordQuery(String sport){
+        System.out.println("破记录表"+sport);
+        Map map=new HashMap();
+        map.put("recordList", queryService.recordsQuery(sport));
+        map.put("message", "查询成功");
+        map.put("code", 1);
+        return map;
     }
 
     List<Player> playersList=new ArrayList<>();//
     //个人成绩查询
-    @PostMapping("record")
-    public List<Player> playerRecordQuery(@RequestBody Player player){
-        List<Player> list = new ArrayList<>();
-        for(int i=0;i<= playersList.size()-1;++i){
-            //筛选id
-            if(!player.getId().equals("")){
-                if(!playersList.get(i).getId().equals(player.getId())){
-                    continue;
-                }
-            }
-            //筛选name
-            if(!player.getName().equals("")){
-                if(!playersList.get(i).getName().equals(player.getName())){
-                    continue;
-                }
-            }
-            //筛选group
-            if(!player.getGroup().equals("")){
-                if(!playersList.get(i).getGroup().equals(player.getGroup())){
-                    continue;
-                }
-            }
-            //如果满足条件
-            list.add(playersList.get(i));
-        }
-        return list;
+    @PostMapping("student")
+    public Map playerRecordQuery(@RequestBody Student student){
+        System.out.println("个人查询");
+//        System.out.println(Student.to);
+        Map map=new HashMap();
+        map.put("resultList", queryService.studentQuery(student));
+        map.put("message", "查询成功");
+        map.put("code", 1);
+        return map;
     }
 
 }

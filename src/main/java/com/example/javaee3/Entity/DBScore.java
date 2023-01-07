@@ -90,4 +90,16 @@ public class DBScore implements Comparable<DBScore>{
     public int compareTo(DBScore o) {
         return  o.getSid()-this.getSid() ;
     }
+
+    public DBScore() {
+    }
+
+    public DBScore(int sid, double score, double result, int rank, String team, String number) {
+        this.sid = sid;
+        this.score = score;
+        this.result = result;
+        this.rank = rank;
+        this.team = team;
+        this.number = number;
+    }
 }

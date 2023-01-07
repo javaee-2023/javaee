@@ -49,6 +49,20 @@ public class Player implements Comparable<Player>{
         this.score = score;
     }
 
+    public Player() {
+    }
+
+    public Player(int rank, int id, String name, String group, String number, double result, double score, int sid) {
+        this.rank = rank;
+        this.id = id;
+        this.name = name;
+        this.group = group;
+        this.number = number;
+        this.result = result;
+        this.score = score;
+        this.sid = sid;
+    }
+
     public int getRank() {
         return rank;
     }
@@ -107,9 +121,20 @@ public class Player implements Comparable<Player>{
 
     @Override
     public int compareTo(Player o) {
-        if(o.getResult()==this.result) return this.id-o.getId();
-        else {
-            return (int)((o.getScore() - this.score)*10000);
+        if(o.getResult()==this.result) return  (o.getId() - this.getId()) > 0 ? 0 : ((this.getId() == o.getId()) ? 0 :1);
+        else{
+            return  (o.getScore() - this.getScore()) > 0 ? 1 : ((this.getScore() == o.getScore()) ? 0 :-1);
         }
+    }
+
+    public Player(int rank, Player o) {
+        this.rank = rank;
+        this.id = o.getId();
+        this.name = o.getName();
+        this.group = o.getGroup();
+        this.number = o.getNumber();
+        this.result = o.getResult();
+        this.score = o.getScore();
+        this.sid = o.getSid();
     }
 }

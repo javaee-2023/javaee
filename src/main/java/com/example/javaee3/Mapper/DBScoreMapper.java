@@ -33,10 +33,10 @@ public interface DBScoreMapper {
 
     @Update("update score set team=#{team}, `number`=#{number} where sid=#{sid}")
     public int updateScoreWithTeamAndNumber(int sid, String team, String number);
-    @Update("update score set `rank`=#{number} where sid=#{sid}")
+    @Update("update score set `rank`=#{rank} where sid=#{sid}")
     public int updateScoreWithRank(int sid, int rank);
-    @Update("update score set team=#{team}, `number`=#{number} where sid=#{sid}")
-    public int updateScoreWithGrade(int sid, int rank, double result, double score);
+    @Update("update score set `result`=#{result}, score=#{score} where sid=#{sid}")
+    public int updateScoreWithGrade(int sid,  double result, double score);
     @Update("update score set `rank`=null, `result`=null, score=null where sid=#{sid}")
     public int initScore(int sid);
 //    @Update("update score set")

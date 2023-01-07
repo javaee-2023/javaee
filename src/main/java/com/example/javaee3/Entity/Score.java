@@ -66,5 +66,6 @@ public class Score {
         this.rank = rank;
     }
 
-
+    public Score() {
+    }
 }

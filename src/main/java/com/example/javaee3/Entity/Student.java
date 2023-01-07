@@ -1,20 +1,21 @@
 package com.example.javaee3.Entity;
 
+import java.util.List;
+
 public class Student {
     private int id;
     private String name;
-    private String gender;
-    private String className;
-    private String address;
-    private String phone;
+    private String group;
+    List<Score> scoreList;
 
-    public Student(int id, String name, String gender, String className, String address, String phone) {
-        this.id = id;
-        this.name = name;
-        this.gender = gender;
-        this.className = className;
-        this.address = address;
-        this.phone = phone;
+    @Override
+    public String toString() {
+        return "Student{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", group='" + group + '\'' +
+                ", scoreList=" + scoreList +
+                '}';
     }
 
     public int getId() {
@@ -33,47 +34,29 @@ public class Student {
         this.name = name;
     }
 
-    public String getGender() {
-        return gender;
+    public String getGroup() {
+        return group;
     }
 
-    public void setGender(String gender) {
-        this.gender = gender;
+    public void setGroup(String group) {
+        this.group = group;
     }
 
-    public String getClassName() {
-        return className;
+    public List<Score> getScoreList() {
+        return scoreList;
     }
 
-    public void setClassName(String className) {
-        this.className = className;
+    public void setScoreList(List<Score> scoreList) {
+        this.scoreList = scoreList;
     }
 
-    public String getAddress() {
-        return address;
+    public Student() {
     }
 
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
-    @Override
-    public String toString() {
-        return "Student{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", gender='" + gender + '\'' +
-                ", className='" + className + '\'' +
-                ", address='" + address + '\'' +
-                ", phone='" + phone + '\'' +
-                '}';
+    public Student(int id, String name, String group, List<Score> scoreList) {
+        this.id = id;
+        this.name = name;
+        this.group = group;
+        this.scoreList = scoreList;
     }
 }

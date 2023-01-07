@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.javaee3.Mapper.QueryMapper">
+    <select id="queryStudent" resultMap="ToStudent" parameterType="Student">
+        select a.aid as id, a.name as name, c.sport as sport, c.`round` as `round`, b.`result` as `result`, b.score as score, b.`rank` as `rank`, a.`group` as `group`
+        from athlete as a, score as b, competition as c, association as d
+        <where>
+            and a.aid=d.aid and b.sid=d.sid and c.cid=d.cid
+            <if test="id!=null and id!=''">
+                and a.aid=#{id}
+            </if>
+            <if test="name!=null and name!=''">
+                and a.name=#{name}
+            </if>
+            <if test="group!=null and group!=''">
+                and a.group=#{group}
+            </if>
+        </where>
+    </select>
+    <resultMap id="ToStudent" type="Student">
+        <result property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="group" column="group"/>
+        <collection property="scoreList" ofType="Score">
+            <result property="sport" column="sport"/>
+            <result property="round" column="round"/>
+            <result property="result" column="result"/>
+            <result property="score" column="score"/>
+            <result property="rank" column="rank"/>
+        </collection>
+    </resultMap>
+</mapper>
